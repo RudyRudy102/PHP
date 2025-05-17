@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8" />
+    <title>Lista aut PHP</title>
+    <style>
+        .zielony {
+            color: green;
+        }
+        .zolty {
+            color: yellow;
+        }
+        .czerwony {
+            animation: miganie 1s infinite;
+        }
+        
+        @keyframes miganie {
+            0% {
+                color: red;
+                background-color: white;
+            }
+            50% {
+                color: white;
+                background-color: red;
+            }
+            100% {
+                color: red;
+                background-color: white;
+            }
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        
+        a {
+            display: inline-block;
+            margin-top: 10px;
+            color: #3498db;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+        <h1>Lista aut</h1>
+
+        <table>
+            <tr>
+                <th>Marka</th>
+                <th>Spalanie</th>
+                <th>Ekologia info</th>
+            </tr>
+<?php
+$mysqli = mysqli_connect("localhost", "s24", "s24.ABCD", "s24Patryk");
+
+$sql = "SELECT marka, spalanie, 
+        CASE 
+            WHEN spalanie > 10 THEN 'spala powyżej 10l'
+            WHEN spalanie < 10 THEN 'spala poniżej 10l'
+            ELSE 'spala 10l'
+        END AS ekologia_info 
+        FROM auta";
+$rez = mysqli_query($mysqli, $sql);
+
+while ($row = mysqli_fetch_assoc($rez)) {
+    echo "<tr>";
+    echo "<td>" . $row['marka'] . "</td>";
+    echo "<td>" . $row['spalanie'] . "</td>";
+    
+ 
+    if($row['spalanie'] > 10) {
+        $klasa = "czerwony";
+    } elseif($row['spalanie'] < 10) {
+        $klasa = "zielony";
+    } else {
+        $klasa = "zolty";
+    }
+    
+    echo "<td class='" . $klasa . "'>" . $row['ekologia_info'] . "</td>";
+    echo "</tr>";
+}
+mysqli_free_result($rez);
+mysqli_close($mysqli);
+?>
+        </table>
+<br>
+<a href="index.php">Powrót do menu głównego</a>
+</body>
+</html>
